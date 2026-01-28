@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+</head>
+
+<body class="bg-linear-to-r from-purple-600 to-black h-screen">
+    <div class="flex justify-center m-4">
+        <nav class="bg-linear-to-r from-orange-100 to-blue-50 w-2xl rounded-xl hover:cursor-pointer">
+            <ul class="flex justify-between space-x-16 text-2xl font-bold text-purple-950 p-4">
+
+                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="#Home.html">Create</a></li>
+                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Read.html">Read</a></li>
+                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Update2.html">Update</a></li>
+                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Delete2.html">Delete</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="flex justify-center m-42">
+    <div class="bg-linear-to-r from-orange-100 to-blue-50 h-80w-6xl flex justify-center rounded-2xl">
+        <form class="grid grid-cols-2 gap-4" onsubmit="createTodo(event)">
+            <div class="m-20"><input type="text" id="title" placeholder="Title"
+                    class="border-4 h-16 w-xl m-6 rounded-2xl text-4xl text-purple-950 font-semibold" />
+
+             <input type="text" id="description" placeholder="Description"
+                    class="border-4 h-16 w-xl m-6 rounded-2xl text-4xl text-purple-950 font-semibold" />
+
+             <button type="submit"
+                    class="border-4 h-16 w-xs rounded-2xl text-4xl text-white font-bold bg-green-800 cursor-pointer m-6">Create
+                    Todo</button>
+            </div>
+            <div><img src="/src/assets/4.jpg"></div>
+        </form>
+    </div>
+    </div>
+    </div>
+    <!-- <div class="bg-linear-to-r from-orange-100 to-blue-50 h-64 w-5xl"> -->
+        <div id="todo-response" class="text-white text-2xl mt-6 font-serif font-bold"></div>
+        <!-- </div> -->
+
+
+    <script>
+        async function createTodo(event) {
+            event.preventDefault();
+
+            const url = 'https://api.freeapi.app/api/v1/todos/';
+            const title = document.getElementById("title").value.trim();
+            const description = document.getElementById("description").value.trim();
+            console.log(title, description);
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { accept: 'application/json', 'content-type': 'application/json' },
+                    body: JSON.stringify({ title, description })
+                });
+                const data = await response.json();
+                console.log(data);
+                
+                const responseContainer = document.getElementById("todo-response");
+
+                if (data.success) {
+                    localStorage.setItem('todoTitle', data.data.title);
+                    localStorage.setItem('todoDescription', data.data.description);
+                    localStorage.setItem('todoId', data.data._id);
+
+                    responseContainer.innerHTML = `
+                        <p>Todo Created Successfully!</p>
+                        <p><strong>Title:</strong> ${data.data.title}</p>
+                        <p><strong>Description:</strong> ${data.data.description}</p>
+                        <p><strong>Todo ID:</strong> ${data.data._id}</p>
+                    `;
+                } else {
+                    responseContainer.innerHTML = `<p>Error: ${data.message}</p>`;
+                }
+            } catch (error) {
+                console.error("Error creating todo:", error);
+            }
+        }
+
+        // function displayTodoFromLocalStorage() {
+        //     const title = localStorage.getItem('todoTitle');
+        //     const description = localStorage.getItem('todoDescription');
+        //     const todoId = localStorage.getItem('todoId');
+        //     const responseContainer = document.getElementById("todo-response");
+
+        //     if (title && description && todoId) {
+        //         responseContainer.innerHTML = `
+        //             <p>Todo Created Successfully</p>
+        //             <p><strong>Title:</strong> ${title}</p>
+        //             <p><strong>Description:</strong> ${description}</p>
+        //             <p><strong>Todo ID:</strong> ${todoId}</p>
+        //         `;
+        //     }
+        // }
+
+        window.onload = displayTodoFromLocalStorage;
+    </script>
+
+
+</body>
+
+</html>
+
+
+
+
+
+

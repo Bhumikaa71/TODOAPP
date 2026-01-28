@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-linear-to-r from-gray-100 to-blue-400 h-screen">
+    <h1 class="flex justify-center text-4xl text-green-600">Create All TODOS</h1>
+    <div>
+        <form class="grid grid-cols-3 gap-4" onsubmit="createTodo(event)">
+            <div><input type="text" id="title" placeholder="Title"
+                    class="border-4 h-16 w-xl m-6 rounded-2xl text-3xl" /></div>
+
+            <div><input type="text" id="description" placeholder="Description"
+                    class="border-4 h-16 w-xl m-6 rounded-2xl text-3xl" /></div>
+
+            <div><button type="submit"
+                    class="border-4 h-16 w-xs rounded-2xl text-3xl bg-green-800 cursor-pointer m-6">Create Todo</button>
+            </div>
+        </form>
+    </div>
+    <hr class="m-24">
+
+
+    <h1 class="flex justify-center text-4xl text-green-600">Create ToDO by Id</h1>
+    <div class="flex justify-center">
+        <form class="grid grid-cols-2 gap-4" onsubmit="todoId(event)">
+            <input type="text" id="todoIdInput" placeholder="Todo ID"
+                class="border-4 h-16 w-xl m-6 rounded-2xl text-3xl" />
+            <button type="submit" class="border-4 h-16 w-xs rounded-2xl text-3xl bg-green-800 cursor-pointer m-6">Get
+                Todo by ID</button>
+        </form>
+    </div>
+    <hr class="m-24">
+    
+    <!-- update todo -->
+    <h1 class="flex justify-center text-4xl text-green-600 ">Update TODO</h1>
+    <div>
+        <form class="grid grid-cols-4 gap-1" onsubmit="updateTodo(event)">
+
+            <div><input type="text" id="todoUpdateInput" placeholder="Title"
+                    class="border-4 h-16 w-xs m-6 rounded-2xl text-3xl" /></div>
+
+            <div><input type="text" id="todoDescriptionInput" placeholder="Description"
+                    class="border-4 h-16 w-xs m-6 rounded-2xl text-3xl" /></div>
+
+            <div><input type="text" id="todoIdInput" placeholder="Todo ID"
+                    class="border-4 h-16 w-xs m-6 rounded-2xl text-3xl" /></div>
+
+            <div><button type="submit"
+                    class="border-4 h-16 w-xs rounded-2xl text-3xl bg-green-800 cursor-pointer m-6">Update Todo</button>
+            </div>
+        </form>
+    </div>
+    <hr class="m-24">
+
+    <!-- delete -->
+    <h1 class="flex justify-center text-4xl text-green-600 ">Delete TODO</h1>
+    <div class="flex justify-center">
+        <form class="grid grid-cols-2 gap-4" onsubmit="todoDelete(event)">
+            <input type="text" id="todoIdDelete" placeholder="Todo ID Delete"
+                class="border-4 h-16 w-xl m-6 rounded-2xl text-3xl" />
+            <button type="submit" class="border-4 h-16 w-xs rounded-2xl text-3xl bg-green-800 cursor-pointer m-6">Delete Todo by ID</button>
+        </form>
+    </div>
+
+
+
+
+    <script>
+        // Create a new Todo
+        async function createTodo(event) {
+            event.preventDefault();
+
+            const url = 'https://api.freeapi.app/api/v1/todos/';
+            const title = document.getElementById("title").value.trim();
+            const description = document.getElementById("description").value.trim();
+            console.log(title, description);
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { accept: 'application/json', 'content-type': 'application/json' },
+                    body: JSON.stringify({
+                        title, description
+                    })
+                });
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.error("Error creating todo:", error);
+            }
+        }
+
+        // Get Todoby ID
+        async function todoId(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('todoIdInput').value.trim();
+            const url = `https://api.freeapi.app/api/v1/todos/${id}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: { accept: 'application/json' },
+                });
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.error("Error by ID:", error);
+            }
+        }
+
+        // update todo
+        async function updateTodo(event) {
+            event.preventDefault();
+            const title = document.getElementById('todoUpdateInput').value.trim();
+            const description = document.getElementById('todoDescriptionInput').value.trim();
+            const id = document.getElementById('todoIdInput').value.trim();
+            const url = `https://api.freeapi.app/api/v1/todos/${id}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: "PATCH",
+                    headers: { accept: 'application/json', 'content-type': 'application/json' },
+                    body: JSON.stringify({
+                        title,
+                        description
+                    })
+                });
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.error("Error updating todo:", error);
+            }
+        }
+
+        // delete todo
+        async function todoDelete(event) {
+            event.preventDefault();
+            const id = document.getElementById('todoIdDelete').value.trim();
+            const url = `https://api.freeapi.app/api/v1/todos/${id}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: { accept: 'application/json' },
+                });
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.error("Error deleting todo:", error);
+            }
+        }
+    </script>
+</body>
+
+</html>

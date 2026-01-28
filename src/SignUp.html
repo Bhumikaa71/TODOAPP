@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO-LIST</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-linear-to-r from-purple-600 to-black h-screen">
+    <h1 class="flex justify-center text-4xl font-serif font-bold text-white m-14">Create New Account</h1>
+    <div class="flex justify-center">
+        <form id="signUpForm" class="bg-linear-to-r from-orange-100 to-blue-50 h-150 w-2xl flex justify-center rounded-3xl" onsubmit="sign(event)">
+
+            <div class="grid-rows-6 space-y-4 font-serif m-10">
+                <label class="font-bold text-purple-950 text-2xl m-2">Email</label>
+                <div><input type="email" id="email" name="email" placeholder="Enter your Email"
+                        class="rounded-xl text-xl border-2 h-14 w-xl text-purple-950 font-semibold" /></div>
+
+                <label class="font-bold text-purple-950 text-2xl">PASSWORD</label>
+                <div><input type="password" id="password" name="password" placeholder="Enter your password"
+                        class="rounded-xl text-xl border-2 h-14 w-xl text-purple-950 font-semibold" /></div>
+
+                <label class="font-bold text-purple-950 text-2xl">ROLE</label>
+                <div class=""><input type="text" id="role" name="role" placeholder="Enter your Role"
+                        class="rounded-xl text-xl border-2 h-14 w-xl text-purple-950 font-semibold" /></div>
+
+                <label class="font-bold text-purple-950 text-2xl">NAME</label>
+                <div class=""><input type="text" id="username" name="username" placeholder="Enter your Name"
+                        class="rounded-xl text-xl border-2 h-14 w-xl text-purple-950 font-semibold" /></div>
+
+                <div class="flex justify-center"><button type="submit" id="signSubmit"
+                        class="border-4  rounded-2xl text-4xl text-white font-bold bg-green-800 cursor-pointer font-serif w-xs h-20">Submit</button>
+                </div>
+
+                <div>
+                    <h1 class="flex justify-center font-bold font-serif text-purple-950">Have an Account?<a
+                            href="/src/LoginIn.html">LOgIn</a></h1>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+<script>
+
+        async function sign(event) {
+         event.preventDefault();
+
+        // const form =document.getElementById('signUpForm');
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const role = document.getElementById('role').value.trim();
+        const name = document.getElementById('username').value.trim();
+
+        const url = 'https://api.freeapi.app/api/v1/users/register';
+
+            console.log('Email:', email, 'Password:', password, 'Role:', role, 'Name:', name);
+
+
+        try {
+        const response = await fetch(url, { 
+
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    role: role,
+                    username: name
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log("Success:", data);
+            } else {
+                console.error("Error:", data);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+</script>
+
+</html>
