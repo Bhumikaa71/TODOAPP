@@ -1,115 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
 
-</head>
-
-<body class="bg-linear-to-r from-purple-600 to-black h-screen">
-    <div class="flex justify-center m-4">
-        <nav class="bg-linear-to-r from-orange-100 to-blue-50 w-2xl rounded-xl hover:cursor-pointer">
-            <ul class="flex justify-between space-x-16 text-2xl font-bold text-purple-950 p-4">
-
-                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="#Home.html">Create</a></li>
-                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Read.html">Read</a></li>
-                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Update2.html">Update</a></li>
-                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Delete2.html">Delete</a></li>
-            </ul>
-        </nav>
+  <body class="bg-linear-to-r from-purple-600 to-black min-h-screen">
+    <!-- NAVBAR -->
+    <div class="flex justify-center p-4">
+      <nav
+        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl"
+      >
+        <ul
+          class="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-10 text-purple-950 p-4 font-bold"
+        >
+          <li
+            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
+          >
+            <a href="#Home.html">Create</a>
+          </li>
+          <li
+            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
+          >
+            <a href="/src/Read.html">Read</a>
+          </li>
+          <li
+            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
+          >
+            <a href="/src/Update2.html">Update</a>
+          </li>
+          <li
+            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
+          >
+            <a href="/src/Delete2.html">Delete</a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
-    <div class="flex justify-center m-42">
-    <div class="bg-linear-to-r from-orange-100 to-blue-50 h-80w-6xl flex justify-center rounded-2xl">
-        <form class="grid grid-cols-2 gap-4" onsubmit="createTodo(event)">
-            <div class="m-20"><input type="text" id="title" placeholder="Title"
-                    class="border-4 h-16 w-xl m-6 rounded-2xl text-4xl text-purple-950 font-semibold" />
+    <!-- MAIN CARD -->
+    <div class="flex justify-center px-4">
+      <div
+        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-2xl p-6"
+      >
+        <form
+          class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+          onsubmit="createTodo(event)"
+        >
+          <!-- FORM -->
+          <div class="space-y-6">
+            <input
+              type="text"
+              id="title"
+              placeholder="Title"
+              class="w-full border-4 p-4 rounded-2xl text-lg sm:text-2xl text-purple-950 font-semibold"
+            />
 
-             <input type="text" id="description" placeholder="Description"
-                    class="border-4 h-16 w-xl m-6 rounded-2xl text-4xl text-purple-950 font-semibold" />
+            <input
+              type="text"
+              id="description"
+              placeholder="Description"
+              class="w-full border-4 p-4 rounded-2xl text-lg sm:text-2xl text-purple-950 font-semibold"
+            />
 
-             <button type="submit"
-                    class="border-4 h-16 w-xs rounded-2xl text-4xl text-white font-bold bg-green-800 cursor-pointer m-6">Create
-                    Todo</button>
-            </div>
-            <div><img src="/src/assets/4.jpg"></div>
+            <button
+              type="submit"
+              class="w-full sm:w-auto border-4 px-8 py-3 rounded-2xl text-xl sm:text-2xl text-white font-bold bg-green-800 hover:bg-green-700 transition"
+            >
+              Create Todo
+            </button>
+          </div>
+
+          <!-- IMAGE -->
+          <div class="flex justify-center">
+            <img
+              src="/src/assets/4.jpg"
+              class="max-w-full h-auto rounded-xl object-cover"
+              alt="Todo illustration"
+            />
+          </div>
         </form>
+      </div>
     </div>
-    </div>
-    </div>
-    <!-- <div class="bg-linear-to-r from-orange-100 to-blue-50 h-64 w-5xl"> -->
-        <div id="todo-response" class="text-white text-2xl mt-6 font-serif font-bold"></div>
-        <!-- </div> -->
 
+    <!-- RESPONSE -->
+    <div
+      id="todo-response"
+      class="text-white text-lg sm:text-2xl mt-6 text-center font-serif font-bold px-4"
+    ></div>
 
     <script>
-        async function createTodo(event) {
-            event.preventDefault();
+      async function createTodo(event) {
+        event.preventDefault();
 
-            const url = 'https://api.freeapi.app/api/v1/todos/';
-            const title = document.getElementById("title").value.trim();
-            const description = document.getElementById("description").value.trim();
-            console.log(title, description);
+        const url = "https://api.freeapi.app/api/v1/todos/";
+        const title = document.getElementById("title").value.trim();
+        const description = document.getElementById("description").value.trim();
 
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { accept: 'application/json', 'content-type': 'application/json' },
-                    body: JSON.stringify({ title, description })
-                });
-                const data = await response.json();
-                console.log(data);
-                
-                const responseContainer = document.getElementById("todo-response");
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              accept: "application/json",
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({ title, description }),
+          });
 
-                if (data.success) {
-                    localStorage.setItem('todoTitle', data.data.title);
-                    localStorage.setItem('todoDescription', data.data.description);
-                    localStorage.setItem('todoId', data.data._id);
+          const data = await response.json();
+          const responseContainer = document.getElementById("todo-response");
 
-                    responseContainer.innerHTML = `
-                        <p>Todo Created Successfully!</p>
-                        <p><strong>Title:</strong> ${data.data.title}</p>
-                        <p><strong>Description:</strong> ${data.data.description}</p>
-                        <p><strong>Todo ID:</strong> ${data.data._id}</p>
-                    `;
-                } else {
-                    responseContainer.innerHTML = `<p>Error: ${data.message}</p>`;
-                }
-            } catch (error) {
-                console.error("Error creating todo:", error);
-            }
+          if (data.success) {
+            localStorage.setItem("todoTitle", data.data.title);
+            localStorage.setItem("todoDescription", data.data.description);
+            localStorage.setItem("todoId", data.data._id);
+
+            responseContainer.innerHTML = `
+            <p>Todo Created Successfully!</p>
+            <p><strong>Title:</strong> ${data.data.title}</p>
+            <p><strong>Description:</strong> ${data.data.description}</p>
+            <p><strong>Todo ID:</strong> ${data.data._id}</p>
+          `;
+          } else {
+            responseContainer.innerHTML = `<p> Error: ${data.message}</p>`;
+          }
+        } catch (error) {
+          console.error("Error creating todo:", error);
         }
-
-        // function displayTodoFromLocalStorage() {
-        //     const title = localStorage.getItem('todoTitle');
-        //     const description = localStorage.getItem('todoDescription');
-        //     const todoId = localStorage.getItem('todoId');
-        //     const responseContainer = document.getElementById("todo-response");
-
-        //     if (title && description && todoId) {
-        //         responseContainer.innerHTML = `
-        //             <p>Todo Created Successfully</p>
-        //             <p><strong>Title:</strong> ${title}</p>
-        //             <p><strong>Description:</strong> ${description}</p>
-        //             <p><strong>Todo ID:</strong> ${todoId}</p>
-        //         `;
-        //     }
-        // }
-
-        window.onload = displayTodoFromLocalStorage;
+      }
     </script>
-
-
-</body>
-
+  </body>
 </html>
-
-
-
-
-
-

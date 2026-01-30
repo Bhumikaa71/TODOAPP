@@ -1,101 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
 
-</head>
-
-<body class="bg-linear-to-r from-purple-600 to-black h-screen">
-    <div class="flex justify-center m-4">
-        <nav class="bg-linear-to-r from-orange-100 to-blue-50 w-2xl rounded-xl hover:cursor-pointer">
-            <ul class="flex justify-between space-x-16 text-2xl font-bold text-purple-950 p-4">
-
-                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Home.html">Create</a></li>
-               <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Read.html">Read</a></li>
-                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="#Update2.html">Update</a></li>
-                <li class="font-serif text-4xl font-bold hover:text-5xl"><a href="/src/Delete2.html">Delete</a></li>
-            </ul>
-        </nav>
+  <body class="bg-linear-to-r from-purple-600 to-black min-h-screen">
+    <!-- NAVBAR -->
+    <div class="flex justify-center p-4">
+      <nav
+        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl"
+      >
+        <ul
+          class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-10 text-purple-950 p-4 font-bold"
+        >
+          <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
+            <a href="/src/Home.html">Create</a>
+          </li>
+          <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
+            <a href="/src/Read.html">Read</a>
+          </li>
+          <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
+            <a href="#Update2.html">Update</a>
+          </li>
+          <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
+            <a href="/src/Delete2.html">Delete</a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
-        <div class="flex justify-center m-20 bg-linear-to-r from-orange-100 to-blue-50 rounded-2xl">
-        <form class="grid grid-rows-4 gap-1" onsubmit="updateTodo(event)">
+    <!-- FORM CARD -->
+    <div class="flex justify-center px-4 sm:px-10 my-10">
+      <div
+        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-3xl rounded-2xl p-6"
+      >
+        <form class="grid grid-cols-1 gap-4" onsubmit="updateTodo(event)">
+          <input
+            type="text"
+            id="todoUpdateInput"
+            placeholder="Title"
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-3xl text-purple-950 font-semibold font-serif px-4"
+          />
 
-            <div><input type="text" id="todoUpdateInput" placeholder="Title"
-                    class="border-4 h-16 w-xl m-6 rounded-2xl text-4xl text-purple-950 font-semibold font-serif" /></div>
+          <input
+            type="text"
+            id="todoDescriptionInput"
+            placeholder="Description"
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-3xl text-purple-950 font-semibold font-serif px-4"
+          />
 
-            <div><input type="text" id="todoDescriptionInput" placeholder="Description"
-                    class="border-4 h-16 w-xl m-6 rounded-2xl text-4xl text-purple-950 font-semibold font-serif" /></div>
+          <input
+            type="text"
+            id="todoIdInput"
+            placeholder="Todo ID"
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-3xl text-purple-950 font-semibold font-serif px-4"
+          />
 
-            <div><input type="text" id="todoIdInput" placeholder="Todo ID"
-                    class="border-4 h-16 w-xl m-6 rounded-2xl text-4xl text-purple-950 font-semibold font-serif" /></div>
-
-            <div><button type="submit"
-                    class="border-4 h-16 w-xs rounded-2xl text-4xl text-white font-bold bg-green-800 cursor-pointer m-6 font-serif">Update Todo</button>
-            </div>
+          <button
+            type="submit"
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-3xl text-white font-bold bg-green-800 cursor-pointer font-serif hover:bg-green-700 transition"
+          >
+            Update Todo
+          </button>
         </form>
+      </div>
     </div>
-        <div id="todo-response" class="text-white text-2xl mt-6 font-serif font-bold"></div>
 
+    <!-- RESPONSE -->
+    <div
+      id="todo-response"
+      class="text-white text-lg sm:text-2xl mt-6 font-serif font-bold text-center px-4"
+    ></div>
 
-       <script>
+    <script>
+      async function updateTodo(event) {
+        event.preventDefault();
+        const title = document.getElementById("todoUpdateInput").value.trim();
+        const description = document
+          .getElementById("todoDescriptionInput")
+          .value.trim();
+        const id = document.getElementById("todoIdInput").value.trim();
+        const url = `https://api.freeapi.app/api/v1/todos/${id}`;
 
-        async function updateTodo(event) {
-            event.preventDefault();
-            const title = document.getElementById('todoUpdateInput').value.trim();
-            const description = document.getElementById('todoDescriptionInput').value.trim();
-            const id = document.getElementById('todoIdInput').value.trim();
-            const url = `https://api.freeapi.app/api/v1/todos/${id}`;
+        try {
+          const response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+              accept: "application/json",
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({ title, description }),
+          });
+          const data = await response.json();
+          const responseContainer = document.getElementById("todo-response");
 
-            try {
-                const response = await fetch(url, {
-                    method: "PATCH",
-                    headers: { accept: 'application/json', 'content-type': 'application/json' },
-                    body: JSON.stringify({
-                        title,
-                        description
-                    })
-                });
-                const data = await response.json();
-                  const responseContainer = document.getElementById("todo-response");
-
-                if (data.success && data.data) {
-                    localStorage.setItem('updatedTodo', JSON.stringify(data.data));
-
-                    responseContainer.innerHTML = `
+          if (data.success && data.data) {
+            localStorage.setItem("updatedTodo", JSON.stringify(data.data));
+            responseContainer.innerHTML = `
                         <p>Todo Updated Successfully!</p>
                         <p><strong>Title:</strong> ${data.data.title}</p>
                         <p><strong>Description:</strong> ${data.data.description}</p>
                         <p><strong>Todo ID:</strong> ${data.data._id}</p>
                     `;
-                } else {
-                    responseContainer.innerHTML = `<p>Error: ${data.message}</p>`;
-                }
-            } catch (error) {
-                console.error("Error updating todo:", error);
-                const responseContainer = document.getElementById("todo-response");
-                responseContainer.innerHTML = `<p>There was an error updating the todo. Please try again.</p>`;
-            }
+          } else {
+            responseContainer.innerHTML = `<p>Error: ${data.message}</p>`;
+          }
+        } catch (error) {
+          document.getElementById("todo-response").innerHTML =
+            `<p>There was an error updating the todo. Please try again.</p>`;
         }
+      }
 
-        function displayTodoFromLocalStorage() {
-            const updatedTodo = JSON.parse(localStorage.getItem('updatedTodo'));
-            const responseContainer = document.getElementById("todo-response");
-
-            // if (updatedTodo) {
-            //     responseContainer.innerHTML = `
-            //         <p><strong>Title:</strong> ${updatedTodo.title}</p>
-            //         <p><strong>Description:</strong> ${updatedTodo.description}</p>
-            //         <p><strong>Todo ID:</strong> ${updatedTodo._id}</p>
-            //     `;
-            // }
-        }
-
-        window.onload = displayTodoFromLocalStorage;
-       </script>
-</body>
+      window.onload = function () {};
+    </script>
+  </body>
 </html>

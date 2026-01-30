@@ -8,41 +8,78 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body class="bg-linear-to-r from-purple-600 to-black h-screen">
-    <h1 class="flex justify-center text-4xl font-serif font-bold text-white m-14">LogIn</h1>
-    <div class="flex justify-center">
-        <form id="loginForm"
-            class="bg-linear-to-r from-orange-100 to-blue-50 h-100 w-2xl flex justify-center rounded-3xl"
-            onsubmit="login(event)">
+<body class="bg-linear-to-r from-purple-600 to-black min-h-screen">
 
-            <div class="grid-rows-4 space-y-6 font-serif m-10">
+    <!-- TITLE -->
+    <h1 class="flex justify-center text-2xl sm:text-4xl font-serif font-bold text-white my-10">
+        LogIn
+    </h1>
 
-                <label class="font-bold text-purple-950 text-3xl">NAME</label>
-                <div class=""><input type="text" id="username" placeholder="Enter your Name"
-                        class="rounded-xl text-xl border-2 h-14 w-xl text-purple-950 font-semibold" /></div>
+    <!-- LOGIN CARD -->
+    <div class="flex justify-center px-4">
+        <form
+            id="loginForm"
+            class="bg-linear-to-r from-orange-100 to-blue-50
+                   w-full max-w-lg rounded-3xl p-8"
+            onsubmit="login(event)"
+        >
 
+            <div class="space-y-6 font-serif">
 
-                <label class="font-bold text-purple-950 text-3xl">PASSWORD</label>
-                <div><input type="password" id="password" placeholder="Enter your Password"
-                        class="rounded-xl text-xl border-2 h-14 w-xl text-purple-950 font-semibold" /></div>
+                <label class="font-bold text-purple-950 text-lg sm:text-2xl">
+                    NAME
+                </label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter your Name"
+                    class="w-full rounded-xl text-base sm:text-xl
+                           border-2 h-12 sm:h-14
+                           text-purple-950 font-semibold px-4"
+                />
 
-                <div class="flex justify-center"><button type="submit" id="loginbtn"
-                        class="border-4  rounded-2xl text-4xl text-white font-bold bg-green-800 cursor-pointer font-serif w-xs h-20">Submit</button>
+                <label class="font-bold text-purple-950 text-lg sm:text-2xl">
+                    PASSWORD
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your Password"
+                    class="w-full rounded-xl text-base sm:text-xl
+                           border-2 h-12 sm:h-14
+                           text-purple-950 font-semibold px-4"
+                />
+
+                <div class="flex justify-center pt-4">
+                    <button
+                        type="submit"
+                        id="loginbtn"
+                        class="border-4 rounded-2xl
+                               text-lg sm:text-3xl text-white
+                               font-bold bg-green-800
+                               cursor-pointer font-serif
+                               w-full sm:w-48 h-12 sm:h-16
+                               hover:bg-green-700 transition"
+                    >
+                        Submit
+                    </button>
                 </div>
 
                 <div>
-                    <h1 class="flex justify-center font-bold font-serif text-purple-950"> Don't Have an Account?<a
-                            href="/src/SignUp.html">SignUp</a></h1>
+                    <h1 class="flex justify-center text-sm sm:text-base
+                               font-bold font-serif text-purple-950">
+                        Don't Have an Account?
+                        <a href="/src/SignUp.html" class="ml-1 underline">
+                            SignUp
+                        </a>
+                    </h1>
                 </div>
-
-
 
             </div>
 
-
-
         </form>
     </div>
+
     <script>
         async function login(event) {
             event.preventDefault();
@@ -54,34 +91,23 @@
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { accept: 'application/json', 'content-type': 'application/json' },
-
                     body: JSON.stringify({
                         password: password,
                         username: name
                     })
-
-
                 });
                 const data = await response.json();
-                console.log(data);
-                  if (data.success) {  
 
-            window.location.href = '/src/Home.html';
-        } else {
-            alert("Login failed: " + data.message); 
-        }
-                console.log(data);
+                if (data.success) {
+                    window.location.href = '/src/Home.html';
+                } else {
+                    alert("Login failed: " + data.message);
+                }
             } catch (error) {
                 console.error(error);
             }
         }
-
-
-
-
-
     </script>
 
 </body>
-
 </html>

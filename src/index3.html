@@ -1,32 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TO-DO-LIST</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
+  </head>
 
-<body class="bg-linear-to-r from-purple-600 to-black h-screen">
+  <body
+    class="bg-linear-to-r from-purple-600 to-black min-h-screen flex items-center"
+  >
+    <div
+      class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 px-8 py-16 items-center"
+    >
+      <!-- LEFT CONTENT -->
+      <div
+        class="flex flex-col items-center lg:items-start text-center lg:text-left"
+      >
+        <h1 class="text-5xl sm:text-6xl lg:text-8xl font-bold text-white mb-10">
+          ToDo List
+        </h1>
 
-    <div class="grid grid-cols-2 p-44">
+        <button
+          class="border-4 px-20 py-3  text-xl lg:text-2xl font-bold bg-green-800 text-white rounded-xl mb-6 hover:bg-green-700 transition"
+        >
+          <a href="/src/LoginIn.html">LogIn</a>
+        </button>
 
-        <div>
-            <h1 class="text-9xl font-bold text-white text-shadow-fuchsia-950 m-24">ToDo List</h1>
-
-            <button class="border-4 h-14 w-xs text-3xl font-bold bg-green-800 text-white ml-64 rounded-xl"><a href="/src/LoginIn.html">LOgIn</a></button> 
-            <p class="text-2xl text-white flex justify-center mr-10 p-16 font-serif gap-2">Don't have an account? 
-                 <button class="border-4 h-10 w-20 text-xl font-bold bg-green-800 text-white rounded-xl">
-                <a href="/src/SignUp.html">SignUp</a></button>
-            </p>
+        <div class="flex items-center gap-3 text-white font-serif text-lg">
+          <span>Don't have an account?</span>
+          <button
+            class="border-4 px-4 py-2 text-sm lg:text-lg font-bold bg-green-800 text-white rounded-xl hover:bg-green-700 transition"
+          >
+            <a href="/src/SignUp.html">SignUp</a>
+          </button>
         </div>
-        <div>
-         <img src="/src/assets/3.jpg" class="rounded-4xl animate-pulse">
-        </div>
+      </div>
+
+      <!-- RIGHT IMAGE -->
+      <div class="flex justify-center">
+        <img
+          src="/src/assets/3.jpg"
+          class="rounded-3xl w-full max-w-md lg:max-w-xl shadow-2xl"
+          alt="Todo Illustration"
+        />
+      </div>
     </div>
-
-    
-
-</body>
+  </body>
 </html>
