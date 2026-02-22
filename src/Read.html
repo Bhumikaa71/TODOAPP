@@ -3,24 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
+    <title>Read Todo</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
-  <body class="bg-linear-to-r from-purple-600 to-black min-h-screen">
+  <body class="bg-gradient-to-r from-purple-600 to-black min-h-screen">
+
     <!-- NAVBAR -->
     <div class="flex justify-center p-4">
-      <nav
-        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl"
-      >
-        <ul
-          class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-10 text-purple-950 p-4 font-bold"
-        >
+      <nav class="bg-gradient-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl">
+        <ul class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-10 text-purple-950 p-4 font-bold">
           <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
             <a href="/src/Home.html">Create</a>
           </li>
           <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
-            <a href="#Read.html">Read</a>
+            <a href="#">Read</a>
           </li>
           <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
             <a href="/src/Update2.html">Update</a>
@@ -32,40 +29,51 @@
       </nav>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- SEARCH CARD -->
     <div class="flex justify-center px-4 sm:px-10 my-10">
-      <div
-        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-4xl rounded-2xl p-6"
-      >
-        <form
-          class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center"
-          onsubmit="todoId(event)"
-        >
+      <div class="bg-gradient-to-r from-orange-100 to-blue-50 w-full max-w-4xl rounded-2xl p-6">
+        <form class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center" onsubmit="getTodoById(event)">
+          
           <input
             type="text"
             id="todoIdInput"
-            placeholder="Todo ID"
-            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-3xl text-purple-950 font-semibold px-4"
+            placeholder="Enter Todo ID"
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-2xl text-purple-950 font-semibold px-4"
+            required
           />
 
           <button
             type="submit"
-            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-2xl bg-green-800 cursor-pointer text-white font-bold font-serif hover:bg-green-700 transition"
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-2xl bg-green-800 text-white font-bold hover:bg-green-700 transition"
           >
             Get Todo by ID
           </button>
+
         </form>
+
+        <div class="flex justify-center mt-6">
+          <button onclick="clearTodos()"
+            class="bg-red-700 text-white px-6 py-2 rounded-xl font-bold hover:bg-red-600 transition">
+            Clear All Saved Todos
+          </button>
+        </div>
+
       </div>
     </div>
 
-    <!-- RESPONSE -->
-    <div
-      id="todo-response"
-      class="text-white text-lg sm:text-2xl mt-6 font-serif font-bold text-center px-4"
-    ></div>
+    <!-- RESPONSE AREA -->
+    <div id="todo-response"
+      class="mt-6 px-4">
+    </div>
 
     <script>
-      async function todoId(event) {
+
+      // Load saved todos on page load
+      window.onload = function () {
+        displaySavedTodos();
+      };
+
+      async function getTodoById(event) {
         event.preventDefault();
 
         const id = document.getElementById("todoIdInput").value.trim();
@@ -76,45 +84,69 @@
             method: "GET",
             headers: { accept: "application/json" },
           });
+
           const data = await response.json();
-          const responseContainer = document.getElementById("todo-response");
 
           if (data.success && data.data) {
-            const todoData = {
-              _id: data.data._id,
+
+            const newTodo = {
+              id: data.data._id,
               title: data.data.title,
               description: data.data.description,
             };
 
-            localStorage.setItem("todoData", JSON.stringify(todoData));
+            let savedTodos = JSON.parse(localStorage.getItem("savedTodos")) || [];
 
-            responseContainer.innerHTML = `
-                        <p><strong>Todo ID:</strong> ${data.data._id}</p>
-                        <p><strong>Title:</strong> ${data.data.title}</p>
-                        <p><strong>Description:</strong> ${data.data.description}</p>
-                    `;
+            // Prevent duplicate
+            const exists = savedTodos.some(todo => todo.id === newTodo.id);
+
+            if (!exists) {
+              savedTodos.push(newTodo);
+              localStorage.setItem("savedTodos", JSON.stringify(savedTodos));
+            }
+
+            displaySavedTodos();
+
+            document.getElementById("todoIdInput").value = "";
+
           } else {
-            responseContainer.innerHTML = `<p>No Todo found with that ID.</p>`;
+            alert("No Todo found with that ID.");
           }
+
         } catch (error) {
-          console.error("Error by ID:", error);
-          document.getElementById("todo-response").innerHTML =
-            `<p>There was an error fetching the todo. Please try again.</p>`;
+          console.error("Error fetching todo:", error);
+          alert("Error fetching todo. Try again.");
         }
       }
 
-      window.onload = function () {
-        const savedTodo = JSON.parse(localStorage.getItem("todoData"));
-        const responseContainer = document.getElementById("todo-response");
+      function displaySavedTodos() {
+        const container = document.getElementById("todo-response");
+        const savedTodos = JSON.parse(localStorage.getItem("savedTodos")) || [];
 
-        if (savedTodo) {
-          responseContainer.innerHTML = `
-                    <p><strong>Todo ID:</strong> ${savedTodo._id}</p>
-                    <p><strong>Title:</strong> ${savedTodo.title}</p>
-                    <p><strong>Description:</strong> ${savedTodo.description}</p>
-                `;
+        if (savedTodos.length === 0) {
+          container.innerHTML = `
+            <p class="text-white text-center text-xl font-bold">
+              No Todos Searched Yet
+            </p>
+          `;
+          return;
         }
-      };
+
+        container.innerHTML = savedTodos.map(todo => `
+          <div class="bg-white text-purple-900 p-6 rounded-xl mb-6 max-w-3xl mx-auto shadow-lg">
+            <p><strong>Todo ID:</strong> ${todo.id}</p>
+            <p><strong>Title:</strong> ${todo.title}</p>
+            <p><strong>Description:</strong> ${todo.description}</p>
+          </div>
+        `).join("");
+      }
+
+      function clearTodos() {
+        localStorage.removeItem("savedTodos");
+        displaySavedTodos();
+      }
+
     </script>
+
   </body>
 </html>

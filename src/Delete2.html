@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
+    <title>Delete Todo</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
-  <body class="bg-linear-to-r from-purple-600 to-black min-h-screen">
+  <body class="bg-gradient-to-r from-purple-600 to-black min-h-screen">
     <!-- NAVBAR -->
     <div class="flex justify-center p-4">
       <nav
-        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl"
+        class="bg-gradient-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl"
       >
         <ul
           class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-10 text-purple-950 p-4 font-bold"
@@ -26,13 +26,13 @@
             <a href="/src/Update2.html">Update</a>
           </li>
           <li class="font-serif text-xl sm:text-3xl hover:scale-110 transition">
-            <a href="#Delete2.html">Delete</a>
+            <a href="#">Delete</a>
           </li>
         </ul>
       </nav>
     </div>
 
-    <!-- MAIN CARD -->
+    <!-- DELETE CARD -->
     <div class="flex justify-center px-4 sm:px-10 my-10">
       <div
         class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-4xl rounded-2xl p-6"
@@ -44,22 +44,23 @@
           <input
             type="text"
             id="todoIdDelete"
-            placeholder="Todo ID Delete"
-            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-3xl text-purple-950 font-semibold font-serif px-4"
+            placeholder="Enter Todo ID"
+            required
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-2xl text-purple-950 font-semibold px-4"
           />
 
           <button
             type="submit"
-            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-3xl text-white bg-green-800 cursor-pointer font-serif hover:bg-green-700 transition"
+            class="border-4 h-14 sm:h-16 w-full rounded-2xl text-lg sm:text-2xl text-white bg-red-700 font-bold hover:bg-red-600 transition"
           >
-            Delete Todo by ID
+            Delete Todo
           </button>
         </form>
 
         <div class="flex justify-center mt-6">
           <button
             onclick="handleLogout()"
-            class="border-4 h-14 sm:h-16 px-10 rounded-2xl text-lg sm:text-3xl text-white bg-green-800 cursor-pointer font-serif hover:bg-green-700 transition"
+            class="border-4 h-14 sm:h-16 px-10 rounded-2xl text-lg sm:text-2xl text-white bg-green-800 font-bold hover:bg-green-700 transition"
           >
             Logout
           </button>
@@ -70,37 +71,57 @@
     <!-- RESPONSE -->
     <div
       id="todo-response"
-      class="text-white text-lg sm:text-2xl mt-6 font-serif font-bold text-center px-4"
+      class="mt-6 px-4 text-center font-serif font-bold"
     ></div>
 
     <script>
       function handleLogout() {
-        window.location.href = "/src/index3.html";
+        window.location.href = "/src/index.html";
       }
 
       async function todoDelete(event) {
         event.preventDefault();
+
         const id = document.getElementById("todoIdDelete").value.trim();
+        const container = document.getElementById("todo-response");
+
+        if (!id) {
+          container.innerHTML = `<p class="text-yellow-300 text-xl">Please enter a Todo ID.</p>`;
+          return;
+        }
+
         const url = `https://api.freeapi.app/api/v1/todos/${id}`;
+
         try {
           const response = await fetch(url, {
             method: "DELETE",
             headers: { accept: "application/json" },
           });
+
           const data = await response.json();
-          const responseContainer = document.getElementById("todo-response");
 
           if (data.success) {
-            responseContainer.innerHTML = `<p>Todo with ID ${id} deleted successfully!</p>`;
             let todos = JSON.parse(localStorage.getItem("todos")) || [];
-            todos = todos.filter((todo) => todo.todoId !== id);
+            todos = todos.filter((todo) => todo.id !== id);
             localStorage.setItem("todos", JSON.stringify(todos));
+
+            container.innerHTML = `
+        <div class="bg-white text-purple-900 p-6 rounded-xl max-w-3xl mx-auto shadow-lg">
+          <p class="text-red-600 text-xl mb-2">Todo Deleted Successfully!</p>
+          <p><strong>Deleted ID:</strong> ${id}</p>
+        </div>
+      `;
+
+            document.getElementById("todoIdDelete").value = "";
           } else {
-            responseContainer.innerHTML = `<p>Failed to delete todo with ID ${id}. Error: ${data.message}</p>`;
+            container.innerHTML = `
+        <p class="text-red-400 text-xl">
+          Failed to delete todo. ${data.message || ""}
+        </p>
+      `;
           }
         } catch (error) {
-          document.getElementById("todo-response").innerHTML =
-            `<p>There was an error deleting the todo. Please try again.</p>`;
+          container.innerHTML = `<p class="text-red-400 text-xl">There was an error deleting the todo. Please try again.</p>`;
         }
       }
     </script>

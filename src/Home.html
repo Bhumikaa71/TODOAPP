@@ -8,32 +8,21 @@
   </head>
 
   <body class="bg-linear-to-r from-purple-600 to-black min-h-screen">
+
     <!-- NAVBAR -->
     <div class="flex justify-center p-4">
-      <nav
-        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl"
-      >
-        <ul
-          class="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-10 text-purple-950 p-4 font-bold"
-        >
-          <li
-            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
-          >
-            <a href="#Home.html">Create</a>
+      <nav class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-xl">
+        <ul class="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-10 text-purple-950 p-4 font-bold">
+          <li class="font-serif text-2xl sm:text-3xl hover:scale-110 transition">
+            <a href="#">Create</a>
           </li>
-          <li
-            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
-          >
+          <li class="font-serif text-2xl sm:text-3xl hover:scale-110 transition">
             <a href="/src/Read.html">Read</a>
           </li>
-          <li
-            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
-          >
+          <li class="font-serif text-2xl sm:text-3xl hover:scale-110 transition">
             <a href="/src/Update2.html">Update</a>
           </li>
-          <li
-            class="font-serif text-2xl sm:text-3xl hover:scale-110 transition"
-          >
+          <li class="font-serif text-2xl sm:text-3xl hover:scale-110 transition">
             <a href="/src/Delete2.html">Delete</a>
           </li>
         </ul>
@@ -42,13 +31,10 @@
 
     <!-- MAIN CARD -->
     <div class="flex justify-center px-4">
-      <div
-        class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-2xl p-6"
-      >
-        <form
-          class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
-          onsubmit="createTodo(event)"
-        >
+      <div class="bg-linear-to-r from-orange-100 to-blue-50 w-full max-w-6xl rounded-2xl p-6">
+
+        <form class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center" onsubmit="createTodo(event)">
+          
           <!-- FORM -->
           <div class="space-y-6">
             <input
@@ -56,6 +42,7 @@
               id="title"
               placeholder="Title"
               class="w-full border-4 p-4 rounded-2xl text-lg sm:text-2xl text-purple-950 font-semibold"
+              required
             />
 
             <input
@@ -63,6 +50,7 @@
               id="description"
               placeholder="Description"
               class="w-full border-4 p-4 rounded-2xl text-lg sm:text-2xl text-purple-950 font-semibold"
+              required
             />
 
             <button
@@ -81,17 +69,22 @@
               alt="Todo illustration"
             />
           </div>
+
         </form>
       </div>
     </div>
 
-    <!-- RESPONSE -->
-    <div
-      id="todo-response"
-      class="text-white text-lg sm:text-2xl mt-6 text-center font-serif font-bold px-4"
-    ></div>
+    <!-- TODO LIST DISPLAY -->
+    <div id="todo-response"
+      class="text-white text-lg sm:text-2xl mt-8 text-center font-serif font-bold px-4">
+    </div>
 
     <script>
+      // Load todos when page loads
+      window.onload = function () {
+        displayTodos();
+      };
+
       async function createTodo(event) {
         event.preventDefault();
 
@@ -110,26 +103,59 @@
           });
 
           const data = await response.json();
-          const responseContainer = document.getElementById("todo-response");
 
           if (data.success) {
-            localStorage.setItem("todoTitle", data.data.title);
-            localStorage.setItem("todoDescription", data.data.description);
-            localStorage.setItem("todoId", data.data._id);
+            const newTodo = {
+              id: data.data._id,
+              title: data.data.title,
+              description: data.data.description,
+            };
 
-            responseContainer.innerHTML = `
-            <p>Todo Created Successfully!</p>
-            <p><strong>Title:</strong> ${data.data.title}</p>
-            <p><strong>Description:</strong> ${data.data.description}</p>
-            <p><strong>Todo ID:</strong> ${data.data._id}</p>
-          `;
+            // Get existing todos
+            let todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+            // Add new todo
+            todos.push(newTodo);
+
+            // Save updated todos
+            localStorage.setItem("todos", JSON.stringify(todos));
+
+            // Clear inputs
+            document.getElementById("title").value = "";
+            document.getElementById("description").value = "";
+
+            // Refresh list
+            displayTodos();
           } else {
-            responseContainer.innerHTML = `<p> Error: ${data.message}</p>`;
+            alert(data.message);
           }
         } catch (error) {
           console.error("Error creating todo:", error);
         }
       }
+
+      function displayTodos() {
+        const container = document.getElementById("todo-response");
+        const todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+        if (todos.length === 0) {
+          container.innerHTML = "<p>No Todos Created Yet</p>";
+          return;
+        }
+
+        container.innerHTML = todos
+          .map(
+            (todo) => `
+            <div class="bg-white text-purple-900 p-4 rounded-xl mb-4 max-w-2xl mx-auto shadow-lg">
+              <p><strong>Title:</strong> ${todo.title}</p>
+              <p><strong>Description:</strong> ${todo.description}</p>
+              <p class="text-sm text-gray-600"><strong>ID:</strong> ${todo.id}</p>
+            </div>
+          `
+          )
+          .join("");
+      }
     </script>
+
   </body>
 </html>
